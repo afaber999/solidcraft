@@ -292,6 +292,8 @@ fn an_opened_design_shows_its_bodies_as_they_are_meshed() {
     while crate::open_meshing::active(&w.app) {
         let shown = crate::open_meshing::shown_world(&w.app);
         assert!(shown.bodies.iter().all(|b| b.cached_mesh().is_some()), "only meshed bodies are drawn");
+        let (done, total) = crate::open_meshing::progress(&w.app).unwrap();
+        assert!(done <= total && total == w.app.session.world_state().bodies.len(), "Loading parts {done}/{total}");
         seen.push(shown.bodies.len());
         w.frame(vec![]);
     }
