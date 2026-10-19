@@ -1013,10 +1013,11 @@ impl Body {
         if d.is_finite() && d > 0.0 { d } else { 1.0 }
     }
 
-    /// A box around the body worked out without meshing it: its vertices, its edges' control
-    /// points (a spline lies in the hull of its controls) and its spline faces' control points.
-    /// A face curving out beyond all of its edges (a dome on a circle) can reach past it, so it
-    /// frames a view while the body is still being meshed; [`Mesh::bounds`] is the exact one.
+    /// A box around the body worked out without meshing it: its vertices and its edges' control
+    /// points (a spline lies in the hull of its controls; a face's surface does not count, as an
+    /// imported face is often trimmed from a far larger one). A face curving out beyond all of
+    /// its edges (a dome on a circle) can reach past it, so it frames a view while the body is
+    /// still being meshed; [`Mesh::bounds`] is the exact one.
     /// A mesh body's box is its triangles'.
     pub fn outline_bounds(&self) -> solidcraft_geom::Aabb3 {
         crate::guard("outline bounds", || Ok(self.outline_bounds_unguarded())).unwrap_or(solidcraft_geom::Aabb3::EMPTY)
@@ -1053,13 +1054,6 @@ impl Body {
                         b.add(from_p3(mt::ParametricCurve::subs(&e.curve(), t0 + (t1 - t0) * f64::from(i) / 8.0)));
                     }
                 }
-            }
-        }
-        for f in self.solid.face_iter() {
-            match f.surface() {
-                mt::Surface::BSplineSurface(s) => s.control_points().iter().flatten().for_each(|p| b.add(from_p3(*p))),
-                mt::Surface::NurbsSurface(s) => s.control_points().iter().flatten().for_each(|p| homogeneous(&mut b, *p)),
-                _ => {}
             }
         }
         b
