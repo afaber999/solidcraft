@@ -415,6 +415,8 @@ pub struct SolveApp {
     pub file_load: file_load::FileLoad,
     /// An opened design's bodies still being meshed, off the UI thread.
     pub(crate) open_meshing: Option<open_meshing::Meshing>,
+    /// A design is being put in the window and will be meshed after it: framing it uses outlines.
+    pub(crate) open_meshing_next: bool,
     /// The other open designs (tabs).
     pub docs: documents::Documents,
     /// The language the installed font fallback chain is ordered for (`fonts::fallback_order`);
@@ -507,6 +509,7 @@ impl SolveApp {
             home: home::HomeState::default(),
             file_load: file_load::FileLoad::default(),
             open_meshing: None,
+            open_meshing_next: false,
             docs: documents::Documents::default(),
             applied_fonts_language: "en".into(),
             applied_ui_font: String::new(),

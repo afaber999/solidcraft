@@ -92,6 +92,7 @@ impl Drop for Meshing {
 /// Start meshing the session's world off the UI thread (an opened design), framing the view from
 /// the bodies' outlines; `remember`: then draw its Home picture.
 pub(crate) fn start(app: &mut SolveApp, remember: bool) {
+    app.open_meshing_next = false;
     let plans = app.viewport.gpu.is_some_and(|g| g.tess);
     let mut meshing = Meshing::start(app.session.world_state(), plans);
     meshing.remember = remember;
@@ -131,6 +132,11 @@ pub(crate) fn show(app: &SolveApp, ctx: &egui::Context) {
 /// Whether bodies are still being meshed after an open.
 pub(crate) fn active(app: &SolveApp) -> bool {
     app.open_meshing.is_some()
+}
+
+/// Whether the view is framed from outlines: bodies being meshed, or about to be.
+pub(crate) fn framing(app: &SolveApp) -> bool {
+    app.open_meshing.is_some() || app.open_meshing_next
 }
 
 /// Per frame: follow the session's world, show more as it is meshed, and frame the finished

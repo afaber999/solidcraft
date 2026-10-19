@@ -791,6 +791,8 @@ pub fn tick(app: &mut SolveApp, ctx: &egui::Context) {
             }
             _ if running.cancelled() => request.answer(Err("file operation cancelled".into())),
             Ok(made) if running.matches(&app.session) => {
+                // Not meshed yet: framing it while it goes in must not mesh it here.
+                app.open_meshing_next = true;
                 if request.insert() {
                     app.session.accept_computed(made.session);
                     app.big_operation = true;

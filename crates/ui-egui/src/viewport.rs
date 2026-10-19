@@ -287,7 +287,7 @@ pub(crate) fn visible_sketches(app: &SolveApp) -> Vec<u64> {
 /// now (see [`solidcraft_engine::view::visible_bounds`]).
 pub fn view_bounds(app: &SolveApp) -> solidcraft_engine::geom::Aabb3 {
     // Bodies still being meshed after an open frame the view by their outlines.
-    if crate::open_meshing::active(app) {
+    if crate::open_meshing::framing(app) {
         return solidcraft_engine::view::unmeshed_bounds(&app.session, app.ui.show_sketches);
     }
     solidcraft_engine::view::visible_bounds(&app.session, app.ui.show_sketches)
